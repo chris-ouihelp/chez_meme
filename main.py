@@ -13,8 +13,7 @@ def encode_image(image_path):
         return base64.b64encode(image_file.read()).decode("utf-8")
 
 
-PROMPT = """Dans le contexte de bénéficiare étant des personnes agées ou handicapées qui souhaitent adapté leur salle de bain à leur situation
-en accord avec "ma prime adapt" française.
+PROMPT = """Dans le contexte de personnes agées ou handicapées qui souhaitent adapter leur habitat à leur situation
 
 voici des liens qui détaillent le sujet :
 Home safety environment
@@ -26,27 +25,31 @@ Home safety environment
 Ma prime Adapt’
 - https://solidarites.gouv.fr/maprimeadapt-nouvelle-aide-pour-adapter-son-logement-la-perte-dautonomie
 
-en utilisant ce contexte je vais te donner une image qui représente une salle de bain avec divers équipements,
+en utilisant ce contexte je vais te donner une image qui représente une pièce de maison avec divers équipements,
 Répond moi seulement et uniquement avec un json au format suivant
 
 {
-  "room": [
+  "room": "cuisine",
+  "items": [
     {
-      "item": "Grab bars",
-      "recommendation": "Install grab bars near the bathtub and next to the toilet to help with balance and stabx@ility.",
-      "status": "idk"
+      "item": "plan de travail",
+      "recommendation": "Le plan de travail doit être à une hauteur accessible, éventuellement ajustable, pour les personnes en fauteuil roulant ou pour celles ayant des difficultés à se baisser.",
+      "comment": "Il semble que le plan de travail soit à une hauteur standard. Il serait bénéfique de vérifier s'il est ajustable ou de le remplacer par un modèle réglable.",
+      "status": "replace"
     },
 }
 
-avec
+avec 
 
-"room" : qui correspond à une pièce de maison que tu auras reconnu
+"room" : le type de pièce dans la maison {chambre, cuisine, salle de bain, ...}
 "item" : un objet précis
 "recommendation" : un texte explication sur l'utilité
-"status" : qui vaut yes si l'objet est présent dans l'image, no s'il ne l'est pas et idk si tu ne sais pas {yes, no, idk}"""
+"comment" : ton avis sur le changement à faire
+"status" : qui vaut ok si l’élément est présent et bien adapter, replace si l’élément à besoin d’être adapter ou changer, absent s’il n’est pas présent et idk si tu ne sais pas {ok, replace, absent, idk},
+"""
 
 if __name__ == "__main__":
-    image = encode_image("/Users/chtr/Dev/ouihelp/starter-genai/salle_de_bain.png")
+    image = encode_image("/Users/antoinebasset/Downloads/image3.jpeg")
     message = HumanMessage(
         content=[
             {
