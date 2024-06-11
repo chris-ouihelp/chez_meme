@@ -13,21 +13,37 @@ def encode_image(image_path):
         return base64.b64encode(image_file.read()).decode("utf-8")
 
 
-PROMPT = """en accord avec "ma prime adapte" française, je vais te donner une image qui 
-représente une pièce d'une salle de bain avec divers équipements, je voudrais que 
-tu me répondes uniquement en me renvoyant un raw json au format suivant avec 
-les booleans qui sont à true si l'équipement te parait manquant et false 
-si il est déja présent. Voici le format pour les différentes pieces, tu 
-dois uniquement m'en renvoyé un d'entre eux en fonction de la piece que tu 
-reconnais : 
-- salle de bain : 
+PROMPT = """Dans le contexte de bénéficiare étant des personnes agées ou handicapées qui souhaitent adapté leur salle de bain à leur situation
+en accord avec "ma prime adapt" française.
+
+voici des liens qui détaillent le sujet :
+Home safety environment
+- https://www.cdc.gov/falls/index.html
+- https://www.who.int/ageing/projects/age-friendly-environments/en/
+- https://www.nia.nih.gov/health/home-safety-and-fall-prevention-older-adults
+- [Personnes âgées et adaptation du logement](https://www.cairn.info/revue-gerontologie-et-societe1-2011-1-page-141.htm)
+
+Ma prime Adapt’
+- https://solidarites.gouv.fr/maprimeadapt-nouvelle-aide-pour-adapter-son-logement-la-perte-dautonomie
+
+en utilisant ce contexte je vais te donner une image qui représente une salle de bain avec divers équipements,
+Répond moi seulement et uniquement avec un json au format suivant
+
 {
-    italian_showers: boolean,
-    raised_toilets: boolean,
-    grab_bars_and_handrails: boolean,
-    automatic_lighting_systems: boolean,
-    non_slip_flooring: boolean
-  }"""
+  "room": [
+    {
+      "item": "Grab bars",
+      "recommendation": "Install grab bars near the bathtub and next to the toilet to help with balance and stabx@ility.",
+      "status": "idk"
+    },
+}
+
+avec
+
+"room" : qui correspond à une pièce de maison que tu auras reconnu
+"item" : un objet précis
+"recommendation" : un texte explication sur l'utilité
+"status" : qui vaut yes si l'objet est présent dans l'image, no s'il ne l'est pas et idk si tu ne sais pas {yes, no, idk}"""
 
 if __name__ == "__main__":
     image = encode_image("/Users/chtr/Dev/ouihelp/starter-genai/salle_de_bain.png")
