@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI
 
 
 def get_model(model_name="gpt-4o"):
-    return ChatOpenAI(model=model_name)
+    return ChatOpenAI(model=model_name).bind(response_format={"type": "json_object"})
 
 
 def encode_image(image_path):
@@ -48,5 +48,4 @@ if __name__ == "__main__":
     response = model.invoke(
         [message],
     )
-    breakpoint()
-    print(response)
+    print(response.pretty_print())
