@@ -33,6 +33,7 @@ Ma prime Adapt’
 - https://solidarites.gouv.fr/maprimeadapt-nouvelle-aide-pour-adapter-son-logement-la-perte-dautonomie
 
 en utilisant ce contexte je vais te donner des images qui représentent des pièces de maison avec divers équipements,
+je souhaite avoir un maximum d'amélioration par pièce
 Répond moi seulement et uniquement avec un json au format suivant
 
 {
@@ -47,7 +48,7 @@ Répond moi seulement et uniquement avec un json au format suivant
             "status": "replace"
             },
         ]
-    }
+    },
 }
 
 avec 
@@ -72,7 +73,8 @@ if __name__ == "__main__":
     images = [
         "/Users/antoinebasset/Downloads/image3.jpeg",
         "/Users/antoinebasset/Downloads/image2.jpg",
-        "/Users/antoinebasset/Downloads/image.png"
+        "/Users/antoinebasset/Downloads/image.png",
+        "/Users/antoinebasset/Downloads/image4.jpeg"
     ]
     
     for image_path in images:
