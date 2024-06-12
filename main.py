@@ -1,4 +1,6 @@
 import base64
+import io
+import json
 
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
@@ -11,6 +13,11 @@ def get_model(model_name="gpt-4o"):
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode("utf-8")
+
+# Fonction pour convertir une image en base64
+def image_to_base64(image_path):
+    with open(image_path, 'rb') as img_file:
+        return base64.b64encode(img_file.read()).decode('utf-8')
 
 
 PROMPT = """Dans le contexte de personnes agées ou handicapées qui souhaitent adapter leur habitat à leur situation
@@ -25,18 +32,22 @@ Home safety environment
 Ma prime Adapt’
 - https://solidarites.gouv.fr/maprimeadapt-nouvelle-aide-pour-adapter-son-logement-la-perte-dautonomie
 
-en utilisant ce contexte je vais te donner une image qui représente une pièce de maison avec divers équipements,
+en utilisant ce contexte je vais te donner des images qui représentent des pièces de maison avec divers équipements,
 Répond moi seulement et uniquement avec un json au format suivant
 
 {
-  "room": "cuisine",
-  "items": [
+  "rooms": [
     {
-      "item": "plan de travail",
-      "recommendation": "Le plan de travail doit être à une hauteur accessible, éventuellement ajustable, pour les personnes en fauteuil roulant ou pour celles ayant des difficultés à se baisser.",
-      "comment": "Il semble que le plan de travail soit à une hauteur standard. Il serait bénéfique de vérifier s'il est ajustable ou de le remplacer par un modèle réglable.",
-      "status": "replace"
-    },
+        "room": "cuisine",
+        "items": [
+            {
+            "item": "plan de travail",
+            "recommendation": "Le plan de travail doit être à une hauteur accessible, éventuellement ajustable, pour les personnes en fauteuil roulant ou pour celles ayant des difficultés à se baisser.",
+            "comment": "Il semble que le plan de travail soit à une hauteur standard. Il serait bénéfique de vérifier s'il est ajustable ou de le remplacer par un modèle réglable.",
+            "status": "replace"
+            },
+        ]
+    }
 }
 
 avec 
@@ -49,20 +60,31 @@ avec
 """
 
 if __name__ == "__main__":
-    image = encode_image("/Users/antoinebasset/Downloads/image3.jpeg")
-    message = HumanMessage(
-        content=[
+
+    base_message = [
             {
                 "type": "text",
                 "text": PROMPT,
+            }
+        ]
+
+    image = encode_image("/Users/antoinebasset/Downloads/image3.jpeg")
+    images = [
+        "/Users/antoinebasset/Downloads/image3.jpeg",
+        "/Users/antoinebasset/Downloads/image2.jpg",
+        "/Users/antoinebasset/Downloads/image.png"
+    ]
+    
+    for image_path in images:
+        image_base64 = image_to_base64(image_path)
+        base_message.append({
+            "type": "image_url",
+            "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"}           
             },
-            {
-                "type": "image_url",
-                # "image_url": image_input_data,
-                "image_url": {"url": f"data:image/jpeg;base64,{image}"},
-            },
-        ],
-    )
+        )
+
+    message = HumanMessage(base_message)
+
     model = get_model()
     response = model.invoke(
         [message],
